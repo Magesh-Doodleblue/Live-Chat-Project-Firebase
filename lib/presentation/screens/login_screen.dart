@@ -33,10 +33,16 @@ class _LoginState extends State<Login> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextField(
-              controller: phoneController,
-              decoration: const InputDecoration(labelText: "Phone number"),
-              keyboardType: TextInputType.phone,
+            GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus();
+              },
+              child: TextField(
+                controller: phoneController,
+                decoration: const InputDecoration(
+                    labelText: "Phone number", hintText: "Type your number"),
+                keyboardType: TextInputType.phone,
+              ),
             ),
             Visibility(
               visible: otpVisibility,
