@@ -19,7 +19,10 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    DialogFlowtter.fromFile().then((instance) => dialogFlowtter = instance);
+    DialogFlowtter.fromFile(
+            path: "JSON-chatapp-a70cd-42ab602f541a.json",
+            projectId: 'chatapp-a70cd')
+        .then((instance) => dialogFlowtter = instance);
   }
 
   @override
