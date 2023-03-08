@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'git_chat.dart';
+import 'chatbot.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const Home(),
+                      builder: (context) => const ChatScreens(),
                     ));
               },
               child: const Text("GO to chat page"),
