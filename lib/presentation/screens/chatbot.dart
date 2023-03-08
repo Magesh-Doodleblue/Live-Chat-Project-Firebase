@@ -2,6 +2,8 @@
 
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
 import 'package:http/http.dart' as http;
@@ -20,6 +22,12 @@ class ChatScreens extends StatefulWidget {
 
 class _ChatScreensState extends State<ChatScreens> {
   final List<ChatMessage> _messages = [];
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+
+  @override
+  initState() {
+    print("initState Called");
+  }
 
   Future<String> getResponse(String message) async {
     final response = await http.post(
@@ -34,7 +42,7 @@ class _ChatScreensState extends State<ChatScreens> {
           'prompt':
               'The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\nUser: $message\n',
           'temperature': 0.5,
-          'max_tokens': 15,
+          'max_tokens': 20,
           'top_p': 1,
           'frequency_penalty': 0,
           'presence_penalty': 0
@@ -44,7 +52,6 @@ class _ChatScreensState extends State<ChatScreens> {
 
     final responseBody = jsonDecode(response.body);
     if (responseBody.containsKey('error')) {
-      // Handle error response from API
       print(responseBody['error']);
       return 'Sorry, there was an error with the AI chatbot. Please try again later.';
     }
@@ -79,6 +86,7 @@ class _ChatScreensState extends State<ChatScreens> {
               itemCount: _messages.length,
               itemBuilder: (BuildContext context, int index) {
                 final message = _messages[index];
+                // print(message.isUserMessage);
                 return ChatBubble(
                   message: message.message,
                   isUserMessage: message.isUserMessage,
@@ -101,3 +109,14 @@ class _ChatScreensState extends State<ChatScreens> {
     );
   }
 }
+
+
+  // void addToDatabase(bool isUserMessage, String message) async {
+  //   DocumentReference docRef = _db.collection('Chat_messages').doc('Magesh1');
+
+  //   await docRef.set({
+  //     "hi": "bye",
+  //     'Message': message,
+  //     'isUserMessage': isUserMessage,
+  //   });
+  // }
