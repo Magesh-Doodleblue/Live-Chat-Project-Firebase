@@ -93,7 +93,8 @@ class _LoginState extends State<Login> {
   void verifyOTP() async {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationID, smsCode: otpController.text);
-
+    String userId = auth.currentUser!.uid;
+    print("User ID: $userId");
     await auth.signInWithCredential(credential).then((value) {
       print("You are logged in successfully");
       Fluttertoast.showToast(
@@ -105,10 +106,13 @@ class _LoginState extends State<Login> {
           textColor: Colors.white,
           fontSize: 18.0);
     });
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomePage(),
-        ));
+
+    if (true) {
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomePage1(),
+          ));
+    }
   }
 }
