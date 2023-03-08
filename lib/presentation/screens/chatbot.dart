@@ -35,7 +35,7 @@ class _ChatScreensState extends State<ChatScreens> {
       headers: {
         'Content-Type': 'application/json',
         'Authorization':
-            'Bearer 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',
+            'Bearer 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',
       },
       body: jsonEncode(
         {
