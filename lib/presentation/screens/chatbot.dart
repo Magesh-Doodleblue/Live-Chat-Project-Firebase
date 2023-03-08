@@ -10,8 +10,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../data/model/chat_messages.dart';
-import 'chat_input.dart';
-import 'chatbubble.dart';
+import '../../domain/chatbot_logic/chatbot_logic.dart';
+import '../widget/chat_input.dart';
+import '../widget/chatbubble.dart';
 
 class ChatScreens extends StatefulWidget {
   const ChatScreens({Key? key}) : super(key: key);
@@ -22,45 +23,6 @@ class ChatScreens extends StatefulWidget {
 
 class _ChatScreensState extends State<ChatScreens> {
   final List<ChatMessage> _messages = [];
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
-
-  @override
-  initState() {
-    print("initState Called");
-  }
-
-  Future<String> getResponse(String message) async {
-    final response = await http.post(
-      Uri.parse('https://api.openai.com/v1/engines/davinci-codex/completions'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization':
-            'Bearer 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',
-      },
-      body: jsonEncode(
-        {
-          'prompt':
-              'The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\nUser: $message\n',
-          'temperature': 0.5,
-          'max_tokens': 20,
-          'top_p': 1,
-          'frequency_penalty': 0,
-          'presence_penalty': 0
-        },
-      ),
-    );
-
-    final responseBody = jsonDecode(response.body);
-    if (responseBody.containsKey('error')) {
-      print(responseBody['error']);
-      return 'Sorry, there was an error with the AI chatbot. Please try again later.';
-    }
-
-    final completions = responseBody['choices'][0]['text'];
-    final textBeforeNewline = completions.split('\n')[0];
-
-    return textBeforeNewline;
-  }
 
   Future<void> _handleSubmitted(String text) async {
     setState(() {
@@ -69,6 +31,14 @@ class _ChatScreensState extends State<ChatScreens> {
     final response = await getResponse(text);
     setState(() {
       _messages.add(ChatMessage(message: response, isUserMessage: false));
+    });
+    await FirebaseFirestore.instance
+        .collection('Magesh1_chat_history')
+        .doc()
+        .set({
+      'user_message': text,
+      'bot_response': response,
+      'timestamp': FieldValue.serverTimestamp(),
     });
   }
 
@@ -109,14 +79,3 @@ class _ChatScreensState extends State<ChatScreens> {
     );
   }
 }
-
-
-  // void addToDatabase(bool isUserMessage, String message) async {
-  //   DocumentReference docRef = _db.collection('Chat_messages').doc('Magesh1');
-
-  //   await docRef.set({
-  //     "hi": "bye",
-  //     'Message': message,
-  //     'isUserMessage': isUserMessage,
-  //   });
-  // }
