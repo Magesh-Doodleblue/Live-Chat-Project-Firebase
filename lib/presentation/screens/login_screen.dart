@@ -1,9 +1,11 @@
-// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+// ignore_for_file: library_private_types_in_public_api
 
-import 'package:chatproject/presentation/screens/homepage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+import 'user3/homepage3.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -39,8 +41,18 @@ class _LoginState extends State<Login> {
               },
               child: TextField(
                 controller: phoneController,
+                onSubmitted: (value) {
+                  if (otpVisibility) {
+                    verifyOTP();
+                  } else {
+                    loginWithPhone();
+                  }
+                },
                 decoration: const InputDecoration(
-                    labelText: "Phone number", hintText: "Type your number"),
+                    hoverColor: Colors.amberAccent,
+                    border: OutlineInputBorder(),
+                    labelText: "Phone number",
+                    hintText: "Type your number"),
                 keyboardType: TextInputType.phone,
               ),
             ),
@@ -48,7 +60,8 @@ class _LoginState extends State<Login> {
               visible: otpVisibility,
               child: TextField(
                 controller: otpController,
-                decoration: const InputDecoration(),
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(), hintText: "TYPE OTP"),
                 keyboardType: TextInputType.number,
               ),
             ),
@@ -75,11 +88,11 @@ class _LoginState extends State<Login> {
       phoneNumber: phoneController.text,
       verificationCompleted: (PhoneAuthCredential credential) async {
         await auth.signInWithCredential(credential).then((value) {
-          print("You are logged in successfully");
+          debugPrint("You are logged in successfully");
         });
       },
       verificationFailed: (FirebaseAuthException e) {
-        print(e.message);
+        debugPrint(e.message);
       },
       codeSent: (String verificationId, int? resendToken) {
         otpVisibility = true;
@@ -93,10 +106,10 @@ class _LoginState extends State<Login> {
   void verifyOTP() async {
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
         verificationId: verificationID, smsCode: otpController.text);
-    String userId = auth.currentUser!.uid;
-    print("User ID: $userId");
+    String? userId = auth.currentUser!.uid;
+    String? userName = auth.languageCode;
+    print("User ID: $userName");
     await auth.signInWithCredential(credential).then((value) {
-      print("You are logged in successfully");
       Fluttertoast.showToast(
           msg: "You are logged in successfully",
           toastLength: Toast.LENGTH_SHORT,
@@ -105,14 +118,30 @@ class _LoginState extends State<Login> {
           backgroundColor: Colors.grey,
           textColor: Colors.white,
           fontSize: 18.0);
-    });
-
-    if (true) {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const HomePage1(),
+            builder: (context) => HomePage3(
+              phoneNumber: phoneController.text,
+            ),
           ));
-    }
+    });
+    addToDatabase(userId, phoneController.text);
+
+    return;
+  }
+
+  addToDatabase(String userId, String phoneNumber) {
+    final CollectionReference collectionReference =
+        FirebaseFirestore.instance.collection('User_details');
+    Map<String, dynamic> data = {
+      'User_Id': userId,
+      'user_phoneNumber': phoneNumber,
+    };
+    collectionReference.doc(phoneNumber).set(data).then((value) {
+      print("User id added to database successfully!");
+    }).catchError((error) {
+      print("Failed to add data: $error");
+    });
   }
 }

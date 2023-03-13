@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class ChatBubble extends StatelessWidget {
+class ChatBubble1 extends StatelessWidget {
   final String message;
   final bool isUserMessage;
   final Color backgroundColor;
   final Color textColor;
 
-  const ChatBubble({
+  const ChatBubble1({
     Key? key,
     required this.message,
     required this.isUserMessage,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'chatbot.dart';
 
 class HomePage1 extends StatelessWidget {
@@ -25,9 +24,10 @@ class HomePage1 extends StatelessWidget {
               onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const ChatScreens(),
+                    builder: (context) => const ChatScreens1(),
                   )),
               child: Container(
+                height: 70,
                 decoration: BoxDecoration(
                     border: Border.all(),
                     borderRadius: BorderRadius.circular(20)),
@@ -37,9 +37,17 @@ class HomePage1 extends StatelessWidget {
                       width: 10,
                     ),
                     CircleAvatar(
-                      maxRadius: 33,
-                      child: Text("Chat 1"),
-                    )
+                      maxRadius: 23,
+                      child: Text(" 1"),
+                    ),
+                    SizedBox(
+                      width: 30,
+                    ),
+                    Text(
+                      "Your Chat",
+                      style:
+                          TextStyle(fontSize: 23, fontWeight: FontWeight.w500),
+                    ),
                   ],
                 ),
               ),
