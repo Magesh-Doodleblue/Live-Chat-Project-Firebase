@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 
 import '../user1/chatbot.dart';
 import '../user2/chatbot2.dart';
+
 import 'chatbot3.dart';
 
-class HomePage3 extends StatelessWidget {
+class HomePage extends StatelessWidget {
   var phoneNumber;
 
-  HomePage3({super.key, required this.phoneNumber});
+  HomePage({super.key, required this.phoneNumber});
 
   @override
   Widget build(BuildContext context) {
